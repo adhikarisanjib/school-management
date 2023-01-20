@@ -1,0 +1,103 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Fee{% endblock title %}
+
+{% block main %}
+
+<style>
+    .bg-esewa {
+        background-color: #60bb46;
+        color: white;
+    }
+
+    .bg-khalti {
+        background-color: #5e338d;
+        color: white;
+    }
+</style>
+<div class="container">
+    <div class="mx-auto">
+        <Legend class="border-bottom">Pay {{amount}}/-</Legend>
+        
+        <!-- Esewa Payment -->
+        <form action="https://uat.esewa.com.np/epay/main" method="POST">
+            <input value="{{amount}}" name="tAmt" type="hidden">
+            <input value="{{amount}}" name="amt" type="hidden">
+            <input value="0" name="txAmt" type="hidden">
+            <input value="0" name="psc" type="hidden">
+            <input value="0" name="pdc" type="hidden">
+            <input value="EPAYTEST" name="scd" type="hidden">
+            <input value="{{pid}}" name="pid" type="hidden">
+            <input value="http://127.0.0.1:8000/student/post_esewa_success/{{pid}}/" type="hidden" name="su">
+            <input value="http://127.0.0.1:8000/student/post_esewa_failed/" type="hidden" name="fu">
+            <input value="Pay Using Esewa" type="submit" class="btn bg-esewa">
+        </form>
+
+        <!-- Khalti Post Payment Request Form -->
+        <form action="http://127.0.0.1:8000/student/post_khalti_success/" method="POST" id="success-form">
+            {% csrf_token %}
+            <input value="" id="idx" name="idx" type="hidden">
+            <input value="" id="product_identity" name="product_identity" type="hidden">
+            <input value="" id="token" name="token" type="hidden">
+            <input value="" id="amount" name="amount" type="hidden">
+        </form>
+
+        <form action="http://127.0.0.1:8000/student/post_khalti_failed/" method="POST" id="failed-form">{% csrf_token %}</form>
+
+        <!-- Khalti Payment -->
+        <button id="payment-button" class="btn bg-khalti mt-2">Pay with Khalti</button>
+    </div>
+</div>
+
+<!-- Khalti Payment Script -->
+<script>
+    let khalti_public_key = "{{test_public_key}}"
+    let pid = "{{pid}}"
+    let username = "{{request.user.name}}"
+    let amount = "{{amount}}" * 100
+
+    let config = {
+        "publicKey": khalti_public_key,
+        "productIdentity": pid,
+        "productName": username,
+        "productUrl": "http://127.0.0.1:8000/student/",
+        "paymentPreference": [
+            "KHALTI",
+            "EBANKING",
+            "MOBILE_BANKING",
+            "CONNECT_IPS",
+            "SCT",
+        ],
+        "eventHandler": {
+            onSuccess(payload) {
+                // console.log(payload)
+                let idx = payload["idx"]
+                let product_identity = payload["play_identity"]
+                let token = payload["token"]
+                let amount = payload["amount"]
+                document.getElementById("idx").setAttribute("value", idx)
+                document.getElementById("product_identity").setAttribute("value", product_identity)
+                document.getElementById("token").setAttribute("value", token)
+                document.getElementById("amount").setAttribute("value", amount)
+                document.getElementById("success-form").submit()
+            },
+            onError(error) {
+                // console.log(error)
+                document.getElementById("failed-form").submit()
+            },
+            onClose() {
+                // console.log("widget is closing")
+            }
+        }
+    }
+
+    let checkout = new KhaltiCheckout(config)
+    let btn = document.getElementById("payment-button")
+    btn.onclick = async function () {
+        checkout.show({ amount: amount })
+    }
+</script>
+{% endblock main %}

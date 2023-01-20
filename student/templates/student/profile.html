@@ -1,0 +1,17 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block main %}
+<div class="container">
+    {% include 'snippets/profile.html' %}
+
+    <div class="mt-2">
+        <a href="{% url 'student:profile-update' %}" class="btn btn-primary mt-2">Update</a>
+        <a href="{% url 'student:password-change' %}" class="btn btn-primary mt-2">Change Password</a>
+    </div>
+</div>
+{% endblock main %}

@@ -1,0 +1,14 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Fee{% endblock title %}
+
+{% block main %}
+
+<div class="container">
+    <a href="{% url 'student:home' %}" class="btn btn-primary">Home</a>
+</div>
+
+{% endblock main %}

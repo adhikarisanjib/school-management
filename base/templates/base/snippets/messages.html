@@ -1,0 +1,7 @@
+{% if messages %}
+{% for message in messages %}
+<div class="d-flex justify-content-center mt-2 text-{{message.tags}}">
+    {{ message|safe }}
+</div>
+{% endfor %}
+{% endif %}

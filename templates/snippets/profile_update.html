@@ -1,0 +1,16 @@
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    <legend class="fw-bold fs-3 border-bottom">Update Profile</legend>
+    {% csrf_token %}
+    <p class="mt-4 fw-bold border-bottom">User Information</p>
+    {{u_form|crispy}}
+    <p class="mt-4 fw-bold border-bottom">General Information</p>
+    {{s_form|crispy}}
+    <p class="mt-4 fw-bold border-bottom">Permanent Address</p>
+    {{pa_form|crispy}}
+    <p class="mt-4 fw-bold border-bottom">Current Address</p>
+    {{ca_form|crispy}}
+    <div class="d-flex justify-content-between my-2 pt-2 border-top">
+        <button class="btn btn-primary" type="submit">Update</button>
+    </div>
+</form>

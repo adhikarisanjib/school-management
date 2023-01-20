@@ -1,0 +1,22 @@
+<header class="shadow-sm">
+    <li class="mx-3 d-none"><i id="id-sidebar-toggler" class='bx bx-menu'></i></li>
+    <ul class="d-flex align-items-center">
+        <li class="mx-2"><a href="{% url 'website:home' %}">Home</a></li>
+    </ul>
+    <ul class="d-flex">
+        {% if request.user.is_authenticated %}
+        {% if request.user.user_type.name == 'administrator' %}
+        <li class="mx-2"><a href="{% url 'administrator:home' %}">Dashboard</a></li>
+        {% elif request.user.user_type.name == 'student' %}
+        <li class="mx-2"><a href="{% url 'student:home' %}">Dashboard</a></li>
+        {% elif request.user.user_type.name == 'accountant' %}
+        <li class="mx-2"><a href="{% url 'accountant:home' %}">Dashboard</a></li>
+        {% elif request.user.user_type.name == 'teacher' %}
+        <li class="mx-2"><a href="{% url 'staff:home' %}">Dashboard</a></li>
+        {% endif %}
+        <li class="mx-2"><a href="{% url 'website:logout' %}">Logout</a></li>
+        {% else %}
+        <li class="mx-2"><a href="{% url 'website:login' %}">Login</a></li>
+        {% endif %}
+    </ul>
+</header>

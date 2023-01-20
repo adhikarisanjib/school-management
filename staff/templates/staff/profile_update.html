@@ -1,0 +1,12 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{action|capfirst}} Profile{% endblock title %}
+
+{% block main %}
+<div class="container">
+    {% include 'snippets/profile_update.html' %}
+</div>
+{% endblock main %}

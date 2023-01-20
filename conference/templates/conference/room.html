@@ -1,0 +1,217 @@
+{% extends "conference/base.html" %}
+{% load static %}
+
+{% block title %}Conference{% endblock title %}
+
+{% block main %}
+
+<style>
+    #video-streams{
+        display: flex;
+        flex-wrap: wrap;
+        height: 85vh;
+        width: 95%;
+        margin:0 auto;
+    }
+
+    .video-container{
+        flex-basis: 500px;
+        flex-grow: 1;
+        max-height: 100%;
+        min-height: 350px;
+        border: 1px solid rgb(75, 93, 172);
+        border-radius: 5px;
+        margin: 2px;
+        background-color: rgba(198,202,219,1);
+        position: relative;
+    }
+
+    .video-player{
+        height: 100%;
+        width: 100%;
+    }
+
+    .video-player > * {
+        border-radius: 5px;
+    }
+
+    .username-wrapper{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 9999;
+        background-color: rgba(0,0,0,0.3);
+        width: fit-content;
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+    }
+
+    @media screen and (max-width:1650px) {
+        .video-container{
+            flex-basis: 300px;
+            min-height: 200px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="mx-auto">
+        <Legend class="border-bottom" id="room-name"></Legend>
+    </div>
+    <div id="video-streams"></div>
+    <div class="mx-auto">
+        <button class="btn btn-info" id="btn-leave">Leave</button>
+        <button class="btn btn-info" id="btn-camera">Camera</button>
+        <button class="btn btn-info" id="btn-mic">Mic</button>
+    </div>
+</div>
+
+<script>
+    const APP_ID = "859a3145cb7d435cafb416143c99397f"
+
+    let TOKEN = null
+    let CHANNEl = null
+    let UID = null
+    let NAME = null
+
+    {% if is_direct_request %}
+        TOKEN = "{{token}}"
+        CHANNEl = "{{channel}}"
+        UID = "{{uid}}"
+        Name = "{{name}}"
+    {% else %}
+        TOKEN = sessionStorage.getItem("token")
+        CHANNEl = sessionStorage.getItem("room")
+        UID = sessionStorage.getItem("uid")
+        NAME = sessionStorage.getItem("name")
+    {% endif %}
+
+    const client = AgoraRTC.createClient({mode: "rtc", codec: "vp8"})
+
+    let localTracks = []
+    let remoteUsers = {}
+
+    let joinAndDisplayLocalStream = async () => {
+        document.getElementById("room-name").innerText = `Room: ${CHANNEl}`
+
+        client.on("user-published", handleUserJoined)
+        client.on("user-left", handleUserLeft)
+
+        try {
+            UID = await client.join(APP_ID, CHANNEl, TOKEN, UID)
+        } catch (error) {
+            console.log(error)
+            window.open("conference/", "_self")
+        }
+
+        localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
+
+        let member = await createMember()
+
+        let player = `<div  class="video-container" id="user-container-${UID}">
+                     <div class="video-player" id="user-${UID}"></div>
+                     <div class="username-wrapper"><span class="user-name">${member.name}</span></div>
+                  </div>`
+
+        document.getElementById("video-streams").insertAdjacentHTML('beforeend', player)
+        localTracks[1].play(`user-${UID}`)
+
+        await client.publish([localTracks[0], localTracks[1]])
+    }
+
+    let handleUserJoined = async (user, mediaType) => {
+        remoteUsers[user.uid] = user
+        await client.subscribe(user, mediaType)
+
+        if (mediaType === "audio") {
+            user.audioTrack.play()
+        }
+
+        if (mediaType === "video") {
+            let player = document.getElementById(`user-container-${user.uid}`)
+            if (player != null) {
+                player.remove()
+            }
+
+            let member = await getMember(user)
+
+            player = `<div  class="video-container" id="user-container-${user.uid}">
+                <div class="video-player" id="user-${user.uid}"></div>
+                <div class="username-wrapper"><span class="user-name">${member.name}</span></div>
+            </div>`
+
+            document.getElementById("video-streams").insertAdjacentHTML("beforeend", player)
+            user.videoTrack.play(`user-${user.uid}`)
+        }
+    }
+
+    let handleUserLeft = async (user) => {
+        delete remoteUsers[user.uid]
+        document.getElementById(`user-container-${user.uid}`).remove()
+    }
+
+    let leaveAndRemoveLocalStream = async () => {
+        for (let i=0; localTracks.length > i; i++) {
+            localTracks[i].stop()
+            localTracks[i].close()
+        }
+
+        await client.leave()
+        deleteMember()
+        window.open("/conference/", "_self")
+    }
+
+    let toggleCamera = async (e) => {
+        if (localTracks[1].muted) {
+            await localTracks[1].setMuted(false)
+        } else {
+            await localTracks[1].setMuted(true)
+        }
+    }
+
+    let toggleMic = async (e) => {
+        if (localTracks[0].muted) {
+            await localTracks[0].setMuted(false)
+        } else {
+            await localTracks[0].setMuted(true)
+        }
+    }
+
+    let createMember = async () => {
+        let response = await fetch("/conference/create_member/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({"room_name": CHANNEl, "uid": UID})
+        })
+        let member = await response.json()
+        return member
+    }
+
+    let getMember = async (user) => {
+        let response = await fetch(`/conference/get_member/?uid=${user.uid}&room_name=${CHANNEl}`)
+        let member = await response.json()
+        return member
+    }
+
+    let deleteMember = async () => {
+        let response = await fetch("/conference/delete_member/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ "room_name": CHANNEl, "uid": UID })
+        })
+        let member = await response.json()
+    }
+
+    joinAndDisplayLocalStream()
+
+    document.getElementById("btn-leave").addEventListener("click", leaveAndRemoveLocalStream)
+    document.getElementById("btn-camera").addEventListener("click", toggleCamera)
+    document.getElementById("btn-mic").addEventListener("click", toggleMic)
+</script>
+{% endblock main %}

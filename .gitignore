@@ -1,0 +1,16 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# For python files
+
+/venv
+/__pycache__
+
+*.pyc
+config.py
+
+db.sqlite
+db_data.json
+
+# For js files
+
+/node_modules

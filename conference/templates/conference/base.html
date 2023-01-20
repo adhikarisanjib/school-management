@@ -1,0 +1,12 @@
+{% extends 'base-template.html' %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block body %}
+<div class="container-base">
+    <div class="container-main">
+        {% block main %} {% endblock main %}
+    </div>
+</div>
+{% endblock body %}

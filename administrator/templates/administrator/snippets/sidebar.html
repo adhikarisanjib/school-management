@@ -1,0 +1,91 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <i class='bx bxl-codepen'></i>
+        <span class="sidebar-title">DemoCode</span>
+    </div>
+    <ul class="nav-links">
+        <li>
+            <a href="{% url 'administrator:student-list' %}">
+                <i class='bx bxs-user'></i>
+                <span class="link_name">Student</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:staff-list' %}">
+                <i class='bx bx-user'></i>
+                <span class="link_name">Staff</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:academic-session-list' %}">
+                <i class='bx bxs-calendar-check'></i>
+                <span class="link_name">Academic Session</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:department-list' %}">
+                <i class='bx bxs-collection'></i>
+                <span class="link_name">Department</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:course-list' %}">
+                <i class='bx bxs-graduation'></i>
+                <span class="link_name">Course</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:class-list' %}">
+                <i class='bx bx-code-curly'></i>
+                <span class="link_name">Class</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:subject-list' %}">
+                <i class='bx bxs-book-alt'></i>
+                <span class="link_name">Subject</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:time-slot-list' %}">
+                <i class='bx bxs-time'></i>
+                <span class="link_name">Time Slot</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'administrator:assign-list' %}">
+                <i class='bx bxs-user-pin'></i>
+                <span class="link_name">Assign</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'conference:home' %}">
+                <i class='bx bxs-video-recording'></i>
+                <span class="link_name">Join Conference</span>
+            </a>
+        </li>
+    </ul>
+    <ul class="profile-nav-links">
+        {% if request.user.is_authenticated %}
+        <li>
+            <a href="{% url 'administrator:profile' %}">
+                <i class='bx bxs-user'></i>
+                <span class="link_name">Profile</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'website:logout' %}">
+                <i class='bx bx-log-out-circle'></i>
+                <span class="link_name">Logout</span>
+            </a>
+        </li>
+        {% else %}
+        <li>
+            <a href="{% url 'website:login' %}">
+                <i class='bx bx-log-in-circle'></i>
+                <span class="link_name">Login</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>

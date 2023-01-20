@@ -1,0 +1,44 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <i class='bx bxl-codepen'></i>
+        <span class="sidebar-title">DemoCode</span>
+    </div>
+    <ul class="nav-links">
+        <li>
+            <a href="{% url 'student:pay-fee' %}">
+                <i class='bx bxs-calendar-check'></i>
+                <span class="link_name">Pay Fee</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'conference:home' %}">
+                <i class='bx bxs-video-recording'></i>
+                <span class="link_name">Join Conference</span>
+            </a>
+        </li>
+    </ul>
+    <ul class="profile-nav-links">
+        {% if request.user.is_authenticated %}
+        <li>
+            <a href="{% url 'student:profile' %}">
+                <i class='bx bxs-user'></i>
+                <span class="link_name">Profile</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'website:logout' %}">
+                <i class='bx bx-log-out-circle'></i>
+                <span class="link_name">Logout</span>
+            </a>
+        </li>
+        {% else %}
+        <li>
+            <a href="{% url 'website:login' %}">
+                <i class='bx bx-log-in-circle'></i>
+                <span class="link_name">Login</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+

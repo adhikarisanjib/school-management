@@ -1,0 +1,46 @@
+{% extends 'base-template.html' %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block body %}
+
+{% include 'student/snippets/sidebar.html' %}
+<div class="container-base">
+    {% include 'student/snippets/header.html' %}
+    {% include 'student/snippets/messages.html' %}
+    <div class="container-main">
+        {% block main %} {% endblock main %}
+    </div>
+    {% include 'student/snippets/footer.html' %}
+</div>
+
+<script>
+    let sidebar = document.getElementsByClassName("sidebar")[0]
+
+    let sidebarSize = localStorage.getItem("sidebar-size")
+    if (!sidebarSize) {
+        sidebarSize = "sidebar-large"
+        localStorage.setItem("sidebar-size", "sidebar-large")
+    }
+    sidebar.classList.add(sidebarSize)
+
+    let sidebarToggler = document.getElementById("id-sidebar-toggler")
+    sidebarToggler.addEventListener("click", function () {
+        sidebar.classList.toggle("sidebar-large")
+        sidebar.classList.toggle("sidebar-small")
+        toggleSidebarSize()
+    })
+    
+    function toggleSidebarSize() {
+        let sidebarSize = localStorage.getItem("sidebar-size")
+        if (sidebarSize === "sidebar-large") {
+            sidebarSize = "sidebar-small"
+        } else if (sidebarSize === "sidebar-small") {
+            sidebarSize = "sidebar-large"
+        }
+        localStorage.setItem("sidebar-size", sidebarSize)
+    }   
+</script>
+
+{% endblock body %}

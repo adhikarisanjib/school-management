@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Update User{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <form method="post" enctype="multipart/form-data">
+        <legend class="border-bottom">Update Profile</legend>
+        {% csrf_token %}
+        {{form|crispy}}
+        <div class="mt-2 pt-2 border-top">
+            <button class="btn btn-primary" type="submit">Update</button>
+        </div>
+    </form>
+</div>
+{% endblock main %}

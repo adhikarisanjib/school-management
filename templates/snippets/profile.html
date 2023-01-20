@@ -1,0 +1,31 @@
+<div class="flex">
+    <div class="">
+        <div class="d-flex justify-content-center">
+            <img class="border rounded-circle" src="{{ user.avatar.url }}">
+        </div>
+        <table class="table table-responsive border-bottom mt-4">
+            <tbody>
+                <tr>
+                    <td>Email :</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <td>Username :</td>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <td>Full Name :</td>
+                    <td>{{ user.name }}</td>
+                </tr>
+                <tr>
+                    <td>Contact No. :</td>
+                    <td>{{ user.contact_number }}</td>
+                </tr>
+                <tr>
+                    <td>User Type :</td>
+                    <td>{{ user.user_type }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

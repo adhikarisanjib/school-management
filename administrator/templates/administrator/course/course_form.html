@@ -1,0 +1,21 @@
+{% extends 'administrator/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{action|capfirst}} Course{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <form method="post">
+        <legend class="fw-bold fs-3 border-bottom">{{action|capfirst}} Course</legend>
+        {% csrf_token %}
+        {{c_form|crispy}}
+        <p class="border-bottom mt-3 mb-0 fw-bold">Fee Details</p>
+        {{f_form|crispy}}
+        <div class="d-flex justify-content-between mt-2 pt-2 border-top">
+            <button class="btn btn-primary" type="submit">{{action}}</button>
+        </div>
+    </form>
+</div>
+{% endblock main %}

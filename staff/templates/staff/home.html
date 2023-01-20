@@ -1,0 +1,17 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <div class="mx-auto">
+        <legend class="border-bottom">Take Attendence</legend>
+        {% for assign in assigns %}
+        <a href="{% url 'staff:take-attendence' uuid=assign.id %}" class="btn">
+            {{assign.assign_class}}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock main %}

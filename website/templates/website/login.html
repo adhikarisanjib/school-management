@@ -1,0 +1,23 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock title %}
+
+{% block main %}
+<div class="container">
+    {% if form %}
+    <form method="post">
+        <legend class="border-bottom">Login</legend>
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="hidden" name="next" value="{{request.GET.next}}">
+        <div class="d-flex justify-content-between mt-2 pt-2 border-top">
+            <button class="btn btn-primary" type="submit">Login</button>
+            <a class="btn" href="{% url 'base:password-reset-request' %}">Forget Password</a>
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock main %}

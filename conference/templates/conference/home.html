@@ -1,0 +1,50 @@
+{% extends 'conference/base.html' %}
+{% load static %}
+
+{% block title %}Conference{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <form id="conference-form">
+        {% if rooms %}
+        <legend class="border-bottom">Join a conference</legend>
+        <div class="flex flex-wrap">
+            {% for room in rooms %}
+            <a href="{% url 'conference:join-room' channel=room %}" class="btn">{{room}}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <legend class="border-bottom">Start a conference</legend>
+        <div class="mb-2">
+            <label>Room:</label>
+            <input class="form-control" name="room" placeholder="Enter a room name">
+        </div>
+        <input type="submit" class="btn btn-info" value="Join Room">
+    </form>
+</div>
+
+<script>
+    let form = document.getElementById("conference-form")
+    let name = "{{request.user.name}}"
+
+    let handleFormSubmit = async (e) => {
+        e.preventDefault()
+        let room = e.target.room.value.toLowerCase()
+
+        let response = await fetch(`https://school-production-e05f.up.railway.app/conference/get_token/?channel=${room}`)
+        let data = await response.json()
+
+        let uid = data.uid
+        let token = data.token
+
+        sessionStorage.setItem("uid", uid)
+        sessionStorage.setItem("token", token)
+        sessionStorage.setItem("room", room)
+        sessionStorage.setItem("name", name)
+
+        window.open("/conference/room/", "_self")
+    }
+
+    form.addEventListener("submit", handleFormSubmit)
+</script>
+{% endblock main %}

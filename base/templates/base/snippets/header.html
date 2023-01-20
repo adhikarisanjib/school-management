@@ -1,0 +1,14 @@
+<header class="shadow-sm">
+    <ul class="d-flex align-items-center">
+        <li class="mx-3"><i id="id-sidebar-toggler" class='bx bx-menu'></i></li>
+    </ul>
+    <ul class="d-flex">
+        {% if user.is_authenticated %}
+        <li class="mx-2"><a href="{% url 'base:user-profile' %}">Profile</a></li>
+        <li class="mx-2"><a href="{% url 'base:logout' %}">Logout</a></li>
+        {% else %}
+        <li class="mx-2"><a href="{% url 'base:login' %}">Login</a></li>
+        <li class="mx-2"><a href="{% url 'base:user-register' %}">Register</a></li>
+        {% endif %}
+    </ul>
+</header>

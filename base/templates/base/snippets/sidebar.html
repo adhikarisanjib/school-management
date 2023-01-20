@@ -1,0 +1,43 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <i class='bx bxl-codepen'></i>
+        <span class="sidebar-title">DemoCode</span>
+    </div>
+    <ul class="nav-links">
+        <li>
+            <a href="{% url 'base:home' %}">
+                <i class='bx bxs-home'></i>
+                <span class="link_name">Home</span>
+            </a>
+        </li>
+    </ul>
+    <ul class="profile-nav-links">
+        {% if request.user.is_authenticated %}
+        <li>
+            <a href="{% url 'base:user-profile' %}">
+                <i class='bx bxs-user'></i>
+                <span class="link_name">Profile</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'base:logout' %}">
+                <i class='bx bx-log-out-circle'></i>
+                <span class="link_name">Logout</span>
+            </a>
+        </li>
+        {% else %}
+        <li>
+            <a href="{% url 'base:login' %}">
+                <i class='bx bx-log-in-circle'></i>
+                <span class="link_name">Login</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'base:user-register' %}">
+                <i class='bx bxs-user-account'></i>
+                <span class="link_name">Register</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>

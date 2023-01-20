@@ -1,0 +1,46 @@
+{% extends 'administrator/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Academic Session List{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <div class="d-flex flex-column">
+        <Legend class="m-0 fw-bold fs-3 pb-2 border-bottom">Academic Sessions</Legend>
+        <div class="d-flex my-2 pb-2 border-bottom">
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" name="search" class="form-control-sm">
+                <button class="btn btn-sm btn-primary" type="submit">Search</button>
+            </form>
+            <div>
+                <a href="{% url 'administrator:academic-session-add' %}" class="btn btn-sm btn-primary mx-4">AddNew</a>
+            </div>
+        </div>
+        {% if academic_sessions %} 
+        <table class="table table-hover table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Batch</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in academic_sessions %}
+                <tr>
+                    <td><a href="{% url 'administrator:academic-session-detail' uuid=object.id %}">{{object.batch}}</a></td>
+                    <td><a href="{% url 'administrator:academic-session-detail' uuid=object.id %}">{{object.start_date}}</a></td>
+                    <td><a href="{% url 'administrator:academic-session-detail' uuid=object.id %}">{{object.end_date}}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %} 
+        <div class="d-flex justify-content-center">No Records.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock main %}
